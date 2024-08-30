@@ -4,6 +4,7 @@ class SystemState {
   final double gasFlowRate;
   final double substrateRotationSpeed;
   final bool isRunning;
+  final Map<String, bool> componentStatus;
 
   SystemState({
     this.temperature = 25.0,
@@ -11,7 +12,16 @@ class SystemState {
     this.gasFlowRate = 100.0,
     this.substrateRotationSpeed = 0.0,
     this.isRunning = false,
-  });
+    Map<String, bool>? componentStatus,
+  }) : this.componentStatus = componentStatus ?? {
+    'heater': false,
+    'pump': false,
+    'valve': false,
+  };
+
+  bool isComponentActive(String componentId) {
+    return componentStatus[componentId] ?? false;
+  }
 
   SystemState copyWith({
     double? temperature,
@@ -19,6 +29,7 @@ class SystemState {
     double? gasFlowRate,
     double? substrateRotationSpeed,
     bool? isRunning,
+    Map<String, bool>? componentStatus,
   }) {
     return SystemState(
       temperature: temperature ?? this.temperature,
@@ -26,6 +37,7 @@ class SystemState {
       gasFlowRate: gasFlowRate ?? this.gasFlowRate,
       substrateRotationSpeed: substrateRotationSpeed ?? this.substrateRotationSpeed,
       isRunning: isRunning ?? this.isRunning,
+      componentStatus: componentStatus ?? this.componentStatus,
     );
   }
 
@@ -35,6 +47,7 @@ class SystemState {
     'gasFlowRate': gasFlowRate,
     'substrateRotationSpeed': substrateRotationSpeed,
     'isRunning': isRunning,
+    'componentStatus': componentStatus,
   };
 
   factory SystemState.fromJson(Map<String, dynamic> json) => SystemState(
@@ -43,6 +56,7 @@ class SystemState {
     gasFlowRate: json['gasFlowRate'],
     substrateRotationSpeed: json['substrateRotationSpeed'],
     isRunning: json['isRunning'],
+    componentStatus: Map<String, bool>.from(json['componentStatus']),
   );
 }
 

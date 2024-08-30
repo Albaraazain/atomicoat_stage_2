@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600">
+  <defs>
+    <linearGradient id="steel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#C0C0C0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A9A9A9;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- N2 Generator -->
+  <rect x="50" y="50" width="150" height="100" rx="10" ry="10" fill="url(#steel)" stroke="#444" stroke-width="2" filter="url(#shadow)" />
+  <text x="125" y="105" text-anchor="middle" fill="#333" font-weight="bold">N₂ Generator</text>
+  <text x="125" y="125" text-anchor="middle" fill="#666" font-size="12">(Apex Nevis Desktop C)</text>
+
+  <!-- MFC -->
+  <rect x="250" y="70" width="120" height="60" rx="5" ry="5" fill="#90EE90" stroke="#444" stroke-width="2" filter="url(#shadow)" />
+  <text x="310" y="105" text-anchor="middle" fill="#333" font-weight="bold">MFC</text>
+  <text x="310" y="120" text-anchor="middle" fill="#666" font-size="10">(ALICAT MC-MFC)</text>
+
+  <!-- Chamber -->
+  <rect x="450" y="200" width="200" height="150" rx="20" ry="20" fill="#B0E0E6" stroke="#444" stroke-width="3" filter="url(#shadow)" />
+  <text x="550" y="280" text-anchor="middle" fill="#333" font-size="24" font-weight="bold">Chamber</text>
+
+  <!-- Pressure Gauges -->
+  <circle cx="400" cy="180" r="30" fill="#FFD700" stroke="#444" stroke-width="2" filter="url(#shadow)" />
+  <text x="400" y="185" text-anchor="middle" fill="#333" font-weight="bold">PG</text>
+  <text x="400" y="200" text-anchor="middle" fill="#666" font-size="8">(ALICAT P-100PSIG-D)</text>
+
+  <circle cx="700" cy="180" r="30" fill="#FFD700" stroke="#444" stroke-width="2" filter="url(#shadow)" />
+  <text x="700" y="185" text-anchor="middle" fill="#333" font-weight="bold">PG</text>
+  <text x="700" y="200" text-anchor="middle" fill="#666" font-size="8">(PCOS 100PSIG-D)</text>
+
+  <!-- Valves -->
+  <path d="M 350,150 L 380,180 L 350,210 L 320,180 Z" fill="#4682B4" stroke="#444" stroke-width="2" filter="url(#shadow)" />
+  <text x="350" y="225" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">Valve</text>
+  <text x="350" y="240" text-anchor="middle" fill="#666" font-size="10">(Swagelok ALD-3)</text>
+
+  <path d="M 750,150 L 780,180 L 750,210 L 720,180 Z" fill="#4682B4" stroke="#444" stroke-width="2" filter="url(#shadow)" />
+  <text x="750" y="225" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">Valve</text>
+  <text x="750" y="240" text-anchor="middle" fill="#666" font-size="10">(Swagelok ALD-3)</text>
+
+  <!-- Heaters -->
+  <rect x="450" y="370" width="80" height="50" rx="10" ry="10" fill="#FF6347" stroke="#444" stroke-width="2" filter="url(#shadow)" />
+  <text x="490" y="400" text-anchor="middle" fill="white" font-weight="bold">H₁</text>
+  <text x="490" y="415" text-anchor="middle" fill="#EEE" font-size="10">150°C</text>
+
+  <rect x="570" y="370" width="80" height="50" rx="10" ry="10" fill="#FF4500" stroke="#444" stroke-width="2" filter="url(#shadow)" />
+  <text x="610" y="400" text-anchor="middle" fill="white" font-weight="bold">H₂</text>
+  <text x="610" y="415" text-anchor="middle" fill="#EEE" font-size="10">200°C</text>
+
+  <!-- Pump -->
+  <path d="M 850,250 L 930,250 Q 950,250 950,270 L 950,330 Q 950,350 930,350 L 850,350 Q 830,350 830,330 L 830,270 Q 830,250 850,250 Z" fill="#4169E1" stroke="#444" stroke-width="3" filter="url(#shadow)" />
+  <text x="890" y="310" text-anchor="middle" fill="white" font-weight="bold">Pump</text>
+  <text x="890" y="330" text-anchor="middle" fill="#EEE" font-size="12">(PFEIFFER Duo 3)</text>
+
+  <!-- Connections -->
+  <path d="M 200,100 Q 225,100 250,100" fill="none" stroke="#1E90FF" stroke-width="3" />
+  <path d="M 370,100 Q 410,100 450,100 L 450,200" fill="none" stroke="#1E90FF" stroke-width="3" />
+  <path d="M 650,275 Q 750,275 830,300" fill="none" stroke="#1E90FF" stroke-width="3" />
+
+  <!-- Control signals -->
+  <path d="M 125,150 L 125,450" stroke="#8A2BE2" stroke-width="2" stroke-dasharray="5,5" />
+  <path d="M 310,130 L 310,450" stroke="#8A2BE2" stroke-width="2" stroke-dasharray="5,5" />
+  <path d="M 400,210 L 400,450" stroke="#8A2BE2" stroke-width="2" stroke-dasharray="5,5" />
+  <path d="M 700,210 L 700,450" stroke="#8A2BE2" stroke-width="2" stroke-dasharray="5,5" />
+  <path d="M 890,350 L 890,450" stroke="#8A2BE2" stroke-width="2" stroke-dasharray="5,5" />
+
+  <!-- Legend -->
+  <rect x="50" y="500" width="20" height="20" fill="url(#steel)" stroke="#444" />
+  <text x="80" y="515" fill="#333">Main Components</text>
+
+  <rect x="50" y="530" width="20" height="20" fill="#90EE90" stroke="#444" />
+  <text x="80" y="545" fill="#333">ALICAT Devices</text>
+
+  <line x1="50" y1="560" x2="70" y2="560" stroke="#1E90FF" stroke-width="3" />
+  <text x="80" y="565" fill="#333">Gas Flow</text>
+
+  <line x1="50" y1="590" x2="70" y2="590" stroke="#8A2BE2" stroke-width="2" stroke-dasharray="5,5" />
+  <text x="80" y="595" fill="#333">Control Signals</text>
+
+  <rect x="250" y="500" width="20" height="20" fill="#FF6347" stroke="#444" />
+  <text x="280" y="515" fill="#333">Heaters</text>
+
+  <path d="M 250,530 L 270,540 L 250,550 L 230,540 Z" fill="#4682B4" stroke="#444" />
+  <text x="280" y="545" fill="#333">Valves</text>
+</svg>

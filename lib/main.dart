@@ -10,17 +10,34 @@ import 'providers/theme_provider.dart';
 import 'services/storage_service.dart';
 import 'services/logging_service.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize services
-  // here we initialize the Hive database, which is used for local storage, specifically for storing recipes
   await Hive.initFlutter();
-  //  here we initialize the storage service, which is used for storing and retrieving data from the local storage
-  await StorageService.initialize();
-  // here we initialize the logging service, which is used for logging messages and errors, which is logged to the console in debug mode
   await LoggingService.initialize();
+
+  bool initializationSuccessful = false;
+  int retryCount = 0;
+  const maxRetries = 3;
+
+  while (!initializationSuccessful && retryCount < maxRetries) {
+    try {
+      await StorageService.initialize();
+      initializationSuccessful = true;
+    } catch (e) {
+      retryCount++;
+      LoggingService.error('Failed to initialize StorageService', error: e);
+      if (retryCount < maxRetries) {
+        await StorageService.clearHiveData();
+      }
+    }
+  }
+
+  if (!initializationSuccessful) {
+    runApp(ErrorApp());
+    return;
+  }
 
   // Set up error handling
   FlutterError.onError = (FlutterErrorDetails details) {
@@ -28,7 +45,6 @@ void main() async {
     LoggingService.error('Flutter error', error: details.exception, stackTrace: details.stack);
   };
 
-  // now this is where the app is run in a zone, which is a way to catch errors that are not caught by the app. its kinda like a try-catch block
   runZonedGuarded(
         () {
       runApp(
@@ -45,4 +61,17 @@ void main() async {
       LoggingService.error('Uncaught error', error: error, stackTrace: stackTrace);
     },
   );
+}
+
+class ErrorApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Text('Failed to initialize the app. Please try again later.'),
+        ),
+      ),
+    );
+  }
 }

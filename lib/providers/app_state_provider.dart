@@ -70,6 +70,14 @@ class AppStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void toggleSystemRunning() {
+    _systemState = _systemState.copyWith(
+      isRunning: !_systemState.isRunning,
+    );
+    // Perform any additional logic needed when starting/stopping the system
+    notifyListeners();
+  }
+
   @override
   void dispose() {
     _updateTimer?.cancel();

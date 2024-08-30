@@ -4,6 +4,8 @@ import '../models/recipe.dart';
 import '../providers/app_state_provider.dart';
 import '../services/storage_service.dart';
 import '../widgets/recipe_list_item.dart';
+import '../widgets/recipe_builder.dart';
+import '../widgets/recipe_simulation.dart';
 
 class RecipeScreen extends StatefulWidget {
   const RecipeScreen({Key? key}) : super(key: key);
@@ -15,6 +17,7 @@ class RecipeScreen extends StatefulWidget {
 class _RecipeScreenState extends State<RecipeScreen> {
   List<Recipe> _recipes = [];
   String _sortBy = 'name';
+  Recipe? _currentRecipe;
 
   @override
   void initState() {
@@ -37,37 +40,42 @@ class _RecipeScreenState extends State<RecipeScreen> {
           return a.name.compareTo(b.name);
         case 'category':
           return a.category.compareTo(b.category);
-        case 'temperature':
-          return a.temperature.compareTo(b.temperature);
+        case 'lastModified':
+          return b.lastModified.compareTo(a.lastModified);
         default:
           return 0;
       }
     });
   }
 
-  void _addRecipe() async {
-    final result = await showDialog<Recipe>(
-      context: context,
-      builder: (BuildContext context) => RecipeDialog(),
-    );
-    if (result != null) {
-      await StorageService.saveRecipe(result);
-      _loadRecipes();
-    }
+  void _createNewRecipe() {
+    setState(() {
+      _currentRecipe = Recipe(
+        id: DateTime.now().toString(),
+        name: 'New Recipe',
+        category: 'Default',
+        steps: [],
+        lastModified: DateTime.now(),
+        version: '1.0',
+      );
+    });
   }
 
-  void _editRecipe(Recipe recipe) async {
-    final result = await showDialog<Recipe>(
-      context: context,
-      builder: (BuildContext context) => RecipeDialog(recipe: recipe),
-    );
-    if (result != null) {
-      await StorageService.saveRecipe(result);
-      _loadRecipes();
-    }
+  void _editRecipe(Recipe recipe) {
+    setState(() {
+      _currentRecipe = recipe;
+    });
   }
 
-  void _deleteRecipe(Recipe recipe) async {
+  Future<void> _saveRecipe(Recipe recipe) async {
+    await StorageService.saveRecipe(recipe);
+    _loadRecipes();
+    setState(() {
+      _currentRecipe = null;
+    });
+  }
+
+  Future<void> _deleteRecipe(Recipe recipe) async {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -114,174 +122,46 @@ class _RecipeScreenState extends State<RecipeScreen> {
                 child: Text('Sort by Category'),
               ),
               const PopupMenuItem<String>(
-                value: 'temperature',
-                child: Text('Sort by Temperature'),
+                value: 'lastModified',
+                child: Text('Sort by Last Modified'),
               ),
             ],
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: _recipes.length,
-        itemBuilder: (context, index) {
-          final recipe = _recipes[index];
-          return RecipeListItem(
-            recipe: recipe,
-            onEdit: () => _editRecipe(recipe),
-            onDelete: () => _deleteRecipe(recipe),
-          );
-        },
+      body: _currentRecipe == null
+          ? _buildRecipeList()
+          : RecipeBuilder(
+        recipe: _currentRecipe!,
+        onSave: _saveRecipe,
+        onCancel: () => setState(() => _currentRecipe = null),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addRecipe,
+        onPressed: _createNewRecipe,
         child: Icon(Icons.add),
       ),
     );
   }
-}
 
-class RecipeDialog extends StatefulWidget {
-  final Recipe? recipe;
-
-  const RecipeDialog({Key? key, this.recipe}) : super(key: key);
-
-  @override
-  _RecipeDialogState createState() => _RecipeDialogState();
-}
-
-class _RecipeDialogState extends State<RecipeDialog> {
-  final _formKey = GlobalKey<FormState>();
-  late String _name;
-  late String _category;
-  late double _temperature;
-  late double _pressure;
-  late double _flowRate;
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.recipe != null) {
-      _name = widget.recipe!.name;
-      _category = widget.recipe!.category;
-      _temperature = widget.recipe!.temperature;
-      _pressure = widget.recipe!.pressure;
-      _flowRate = widget.recipe!.flowRate;
-    } else {
-      _name = '';
-      _category = 'Standard';
-      _temperature = 25.0;
-      _pressure = 101325.0;
-      _flowRate = 100.0;
-    }
+  Widget _buildRecipeList() {
+    return ListView.builder(
+      itemCount: _recipes.length,
+      itemBuilder: (context, index) {
+        final recipe = _recipes[index];
+        return RecipeListItem(
+          recipe: recipe,
+          onEdit: () => _editRecipe(recipe),
+          onDelete: () => _deleteRecipe(recipe),
+          onSimulate: () => _showSimulation(recipe),
+        );
+      },
+    );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(widget.recipe == null ? 'Add Recipe' : 'Edit Recipe'),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            TextFormField(
-              initialValue: _name,
-              decoration: InputDecoration(labelText: 'Recipe Name'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a name';
-                }
-                return null;
-              },
-              onSaved: (value) => _name = value!,
-            ),
-            DropdownButtonFormField<String>(
-              value: _category,
-              decoration: InputDecoration(labelText: 'Category'),
-              items: ['Standard', 'High-Temp', 'Low-Pressure', 'Experimental']
-                  .map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _category = value!;
-                });
-              },
-            ),
-            TextFormField(
-              initialValue: _temperature.toString(),
-              decoration: InputDecoration(labelText: 'Temperature (°C)'),
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a temperature';
-                }
-                if (double.tryParse(value) == null) {
-                  return 'Please enter a valid number';
-                }
-                return null;
-              },
-              onSaved: (value) => _temperature = double.parse(value!),
-            ),
-            TextFormField(
-              initialValue: _pressure.toString(),
-              decoration: InputDecoration(labelText: 'Pressure (Pa)'),
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a pressure';
-                }
-                if (double.tryParse(value) == null) {
-                  return 'Please enter a valid number';
-                }
-                return null;
-              },
-              onSaved: (value) => _pressure = double.parse(value!),
-            ),
-            TextFormField(
-              initialValue: _flowRate.toString(),
-              decoration: InputDecoration(labelText: 'Flow Rate (sccm)'),
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a flow rate';
-                }
-                if (double.tryParse(value) == null) {
-                  return 'Please enter a valid number';
-                }
-                return null;
-              },
-              onSaved: (value) => _flowRate = double.parse(value!),
-            ),
-          ],
-        ),
-      ),
-      actions: <Widget>[
-        TextButton(
-          child: Text('Cancel'),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        TextButton(
-          child: Text(widget.recipe == null ? 'Add' : 'Save'),
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              _formKey.currentState!.save();
-              final recipe = Recipe(
-                id: widget.recipe?.id ?? DateTime.now().toString(),
-                name: _name,
-                category: _category,
-                temperature: _temperature,
-                pressure: _pressure,
-                flowRate: _flowRate,
-              );
-              Navigator.of(context).pop(recipe);
-            }
-          },
-        ),
-      ],
+  void _showSimulation(Recipe recipe) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => RecipeSimulation(recipe: recipe),
     );
   }
 }

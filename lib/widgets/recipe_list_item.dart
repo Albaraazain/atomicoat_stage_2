@@ -5,12 +5,14 @@ class RecipeListItem extends StatelessWidget {
   final Recipe recipe;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+  final VoidCallback onSimulate;
 
   const RecipeListItem({
     Key? key,
     required this.recipe,
     required this.onEdit,
     required this.onDelete,
+    required this.onSimulate,
   }) : super(key: key);
 
   @override
@@ -19,7 +21,7 @@ class RecipeListItem extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: ListTile(
         title: Text(recipe.name),
-        subtitle: Text('${recipe.category} - ${recipe.temperature}°C'),
+        subtitle: Text('${recipe.category} - Last modified: ${recipe.lastModified.toLocal()}'),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -30,6 +32,10 @@ class RecipeListItem extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.delete),
               onPressed: onDelete,
+            ),
+            IconButton(
+              icon: Icon(Icons.play_arrow),
+              onPressed: onSimulate,
             ),
           ],
         ),
@@ -44,9 +50,9 @@ class RecipeListItem extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text('Category: ${recipe.category}'),
-                    Text('Temperature: ${recipe.temperature}°C'),
-                    Text('Pressure: ${recipe.pressure} Pa'),
-                    Text('Flow Rate: ${recipe.flowRate} sccm'),
+                    Text('Version: ${recipe.version}'),
+                    Text('Last Modified: ${recipe.lastModified.toLocal()}'),
+                    Text('Steps: ${recipe.steps.length}'),
                   ],
                 ),
                 actions: [

@@ -40,17 +40,18 @@ class SystemDiagram extends StatelessWidget {
             _buildValve(width, height, 'v2', 'V2', 0.44, 0.4),
 
             // Connections from valves to heaters
-            _buildConnection(width, height, 0.385, 0.53, 0.465, 0.6),
+            _buildConnection(width, height, 0.385, 0.53, 0.385, 0.6),
             _buildConnection(width, height, 0.465, 0.53, 0.465, 0.6),
 
-            // Heaters
-            _buildComponent(width, height, 'h1', 'H1', 0.34, 0.6, 0.09, 0.08, Colors.red[100]!),
-            _buildComponent(width, height, 'h2', 'H2', 0.42, 0.6, 0.09, 0.08, Colors.red[100]!),
+            // Heaters (width reduced from 0.09 to 0.07 and repositioned to stay centered)
+            _buildComponent(width, height, 'h1', 'H1', 0.35, 0.6, 0.07, 0.08, Colors.red[100]!),
+            _buildComponent(width, height, 'h2', 'H2', 0.43, 0.6, 0.07, 0.08, Colors.red[100]!),
           ],
         );
       },
     );
   }
+
 
   Widget _buildComponent(double width, double height, String id, String label, double x, double y, double widthFactor, double heightFactor, Color color) {
     return Positioned(

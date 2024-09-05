@@ -38,7 +38,7 @@ class SystemControlScreen extends StatelessWidget {
                   top: 10,
                   left: 10,
                   child: IconButton(
-                    icon: Icon(Icons.arrow_back),
+                    icon: const Icon(Icons.arrow_back),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ),

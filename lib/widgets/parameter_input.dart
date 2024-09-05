@@ -20,14 +20,14 @@ class ParameterInput extends StatelessWidget {
       children: <Widget>[
         Expanded(
           flex: 2,
-          child: Text(label, style: TextStyle(fontSize: 16)),
+          child: Text(label, style: const TextStyle(fontSize: 16)),
         ),
         Expanded(
           flex: 3,
           child: TextFormField(
             initialValue: initialValue,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             ),

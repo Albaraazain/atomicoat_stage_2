@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import '../providers/app_state_provider.dart';
 
 class MachineStatusChatScreen extends StatefulWidget {
+  const MachineStatusChatScreen({super.key});
+
   @override
   _MachineStatusChatScreenState createState() => _MachineStatusChatScreenState();
 }
@@ -31,7 +31,7 @@ class _MachineStatusChatScreenState extends State<MachineStatusChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Machine Status Chat",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
         ),
@@ -62,8 +62,8 @@ class _MachineStatusChatScreenState extends State<MachineStatusChatScreen> {
 
   Widget _buildTextComposer() {
     return Container(
-      decoration: BoxDecoration(color: Colors.white),
-      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+      decoration: const BoxDecoration(color: Colors.white),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
       child: Row(
         children: [
           Expanded(
@@ -78,18 +78,18 @@ class _MachineStatusChatScreenState extends State<MachineStatusChatScreen> {
                 ),
                 filled: true,
                 fillColor: Colors.grey[200],
-                contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
               ),
             ),
           ),
-          SizedBox(width: 8.0),
+          const SizedBox(width: 8.0),
           Container(
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
               shape: BoxShape.circle,
             ),
             child: IconButton(
-              icon: Icon(Icons.send, color: Colors.white),
+              icon: const Icon(Icons.send, color: Colors.white),
               onPressed: () => _handleSubmitted(_messageController.text),
             ),
           ),
@@ -106,7 +106,7 @@ class ChatMessage extends StatelessWidget {
   final bool isMe;
   final DateTime timestamp;
 
-  ChatMessage({
+  const ChatMessage({super.key, 
     required this.text,
     required this.senderName,
     required this.senderAvatar,
@@ -121,7 +121,7 @@ class ChatMessage extends StatelessWidget {
 
     if (messageDate == today) {
       return DateFormat.jm().format(timestamp);
-    } else if (messageDate == today.subtract(Duration(days: 1))) {
+    } else if (messageDate == today.subtract(const Duration(days: 1))) {
       return 'Yesterday ${DateFormat.jm().format(timestamp)}';
     } else {
       return DateFormat('MMM d, y HH:mm').format(timestamp);
@@ -131,7 +131,7 @@ class ChatMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+      margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
       child: Column(
         crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
@@ -143,7 +143,7 @@ class ChatMessage extends StatelessWidget {
                   backgroundImage: NetworkImage(senderAvatar),
                   radius: 16,
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
               ],
               Text(
                 senderName,
@@ -155,15 +155,15 @@ class ChatMessage extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Row(
             mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              if (!isMe) SizedBox(width: 40),
+              if (!isMe) const SizedBox(width: 40),
               Flexible(
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 14.0),
+                  padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 14.0),
                   decoration: BoxDecoration(
                     color: isMe ? Colors.lightGreen[100] : Colors.white,
                     borderRadius: BorderRadius.circular(18.0),
@@ -171,20 +171,20 @@ class ChatMessage extends StatelessWidget {
                       BoxShadow(
                         color: Colors.black.withOpacity(0.05),
                         blurRadius: 5,
-                        offset: Offset(0, 2),
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
                   child: Text(
                     text,
-                    style: TextStyle(fontSize: 14),
+                    style: const TextStyle(fontSize: 14),
                   ),
                 ),
               ),
-              if (isMe) SizedBox(width: 40),
+              if (isMe) const SizedBox(width: 40),
             ],
           ),
-          SizedBox(height: 2),
+          const SizedBox(height: 2),
           Text(
             _formatTimestamp(),
             style: TextStyle(

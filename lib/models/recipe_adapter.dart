@@ -11,7 +11,7 @@ class RecipeTypeAdapterCustom extends TypeAdapter<Recipe> {
       id: reader.readString(),
       name: reader.readString(),
       category: reader.readString(),
-      steps: (reader.readList() as List<dynamic>).cast<RecipeStep>(),
+      steps: (reader.readList()).cast<RecipeStep>(),
       lastModified: DateTime.parse(reader.readString()),
       version: reader.readString(),
     );

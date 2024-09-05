@@ -22,9 +22,9 @@ class _RecipeBuilderState extends State<RecipeBuilder> {
   late TextEditingController _categoryController;
   List<RecipeStep> _steps = [];
 
-  final Color teslaRed = Color(0xFFE82127);
-  final Color teslaGray = Color(0xFFF4F4F4);
-  final Color teslaDarkGray = Color(0xFF333333);
+  final Color teslaRed = const Color(0xFFE82127);
+  final Color teslaGray = const Color(0xFFF4F4F4);
+  final Color teslaDarkGray = const Color(0xFF333333);
 
   @override
   void initState() {
@@ -112,19 +112,19 @@ class _RecipeBuilderState extends State<RecipeBuilder> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildTextField(_nameController, 'Recipe Name'),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _buildTextField(_categoryController, 'Category'),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           Text('Steps', style: TextStyle(
               fontSize: 24, fontWeight: FontWeight.w300, color: teslaDarkGray)),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           ..._steps.map((step) => _buildStepCard(step)),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _buildAddStepButton(),
         ],
       ),
@@ -155,12 +155,12 @@ class _RecipeBuilderState extends State<RecipeBuilder> {
 
   Widget _buildStepCard(RecipeStep step, {RecipeStep? parentStep}) {
     return Card(
-      margin: EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 0,
       color: teslaGray,
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -179,10 +179,10 @@ class _RecipeBuilderState extends State<RecipeBuilder> {
                 ),
               ],
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             _buildStepContent(step),
             if (step.type == 'Loop') ...[
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 'Nested Steps',
                 style: TextStyle(fontSize: 16,
@@ -272,31 +272,31 @@ class _RecipeBuilderState extends State<RecipeBuilder> {
   Widget _buildAddStepButton() {
     return Center(
       child: ElevatedButton(
-        child: Text(
-          'ADD STEP',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
         style: ElevatedButton.styleFrom(
           backgroundColor: teslaRed,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30)),
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         ),
         onPressed: () => _showAddStepDialog(),
+        child: const Text(
+          'ADD STEP',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }
 
   Widget _buildAddNestedStepButton(RecipeStep parentStep) {
     return TextButton(
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      ),
+      onPressed: () => _showAddStepDialog(parentStep: parentStep),
       child: Text(
         'ADD NESTED STEP',
         style: TextStyle(color: teslaRed, fontWeight: FontWeight.bold),
       ),
-      style: TextButton.styleFrom(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      ),
-      onPressed: () => _showAddStepDialog(parentStep: parentStep),
     );
   }
 

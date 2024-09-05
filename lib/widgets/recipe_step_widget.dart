@@ -61,24 +61,24 @@ class _RecipeStepWidgetState extends State<RecipeStepWidget> {
               Row(
               children: [
               _buildStepIcon(),
-          SizedBox(width: 8),
-          Expanded(child: Text(widget.step.type, style: TextStyle(fontWeight: FontWeight.bold))),
+          const SizedBox(width: 8),
+          Expanded(child: Text(widget.step.type, style: const TextStyle(fontWeight: FontWeight.bold))),
           IconButton(
-            icon: Icon(Icons.delete, color: Colors.red),
+            icon: const Icon(Icons.delete, color: Colors.red),
             onPressed: widget.onRemove,
           ),
           ],
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         _buildStepContent(),
         if (widget.step.type == 'Loop')
     Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-        SizedBox(height: 16),
-    Text('Nested Steps:', style: TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 16),
+    const Text('Nested Steps:', style: TextStyle(fontWeight: FontWeight.bold)),
     ..._buildNestedSteps(),
-    SizedBox(height: 8),
+    const SizedBox(height: 8),
     _buildAddNestedStepButton(),
         ],
     ),
@@ -111,7 +111,7 @@ class _RecipeStepWidgetState extends State<RecipeStepWidget> {
     }
 
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: iconColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
@@ -169,14 +169,14 @@ class _RecipeStepWidgetState extends State<RecipeStepWidget> {
 
   Widget _buildAddNestedStepButton() {
     return ElevatedButton.icon(
-      icon: Icon(Icons.add, size: 18),
-      label: Text('Add Nested Step'),
+      icon: const Icon(Icons.add, size: 18),
+      label: const Text('Add Nested Step'),
       onPressed: () => _showAddNestedStepDialog(),
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.blue, backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          side: BorderSide(color: Colors.blue),
+          side: const BorderSide(color: Colors.blue),
         ),
       ),
     );
@@ -185,7 +185,7 @@ class _RecipeStepWidgetState extends State<RecipeStepWidget> {
   void _showAddNestedStepDialog() {
     showModalBottomSheet(
       context: context,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (BuildContext context) {
@@ -194,24 +194,24 @@ class _RecipeStepWidgetState extends State<RecipeStepWidget> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: Icon(Icons.radio_button_checked, color: Colors.blue),
-                title: Text('Valve'),
+                leading: const Icon(Icons.radio_button_checked, color: Colors.blue),
+                title: const Text('Valve'),
                 onTap: () {
                   Navigator.of(context).pop();
                   widget.onAddNestedStep('Valve', widget.step);
                 },
               ),
               ListTile(
-                leading: Icon(Icons.cleaning_services, color: Colors.green),
-                title: Text('Purge'),
+                leading: const Icon(Icons.cleaning_services, color: Colors.green),
+                title: const Text('Purge'),
                 onTap: () {
                   Navigator.of(context).pop();
                   widget.onAddNestedStep('Purge', widget.step);
                 },
               ),
               ListTile(
-                leading: Icon(Icons.loop, color: Colors.orange),
-                title: Text('Loop'),
+                leading: const Icon(Icons.loop, color: Colors.orange),
+                title: const Text('Loop'),
                 onTap: () {
                   Navigator.of(context).pop();
                   widget.onAddNestedStep('Loop', widget.step);

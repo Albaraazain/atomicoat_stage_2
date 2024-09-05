@@ -83,7 +83,7 @@ class _SystemComponentState extends State<SystemComponent> with SingleTickerProv
                     alignment: Alignment.center,
                     child: Text(
                       widget.name,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 12,

@@ -17,7 +17,7 @@ class RecipeVisualRepresentation extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
+          const Padding(
             padding: EdgeInsets.all(16.0),
             child: Text(
               'Recipe Visualization',
@@ -48,16 +48,16 @@ class RecipeVisualRepresentation extends StatelessWidget {
             child: Row(
               children: [
                 _buildStepIcon(step.type),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         step.type,
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Text(_getStepDescription(step)),
                     ],
                   ),
@@ -95,7 +95,7 @@ class RecipeVisualRepresentation extends StatelessWidget {
     }
 
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: iconColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),

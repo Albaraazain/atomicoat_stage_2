@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class StatusIndicator extends StatelessWidget {
   final String status;
 
-  StatusIndicator({required this.status});
+  const StatusIndicator({super.key, required this.status});
 
   Color _getStatusColor() {
     switch (status.toLowerCase()) {
@@ -30,10 +30,10 @@ class StatusIndicator extends StatelessWidget {
             shape: BoxShape.circle,
           ),
         ),
-        SizedBox(width: 8),
+        const SizedBox(width: 8),
         Text(
           'Status: $status',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ],
     );

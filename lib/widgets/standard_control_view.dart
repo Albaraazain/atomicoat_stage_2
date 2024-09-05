@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class StandardControlView extends StatefulWidget {
+  const StandardControlView({super.key});
+
   @override
   _StandardControlViewState createState() => _StandardControlViewState();
 }
@@ -27,10 +29,10 @@ class _StandardControlViewState extends State<StandardControlView> with SingleTi
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Standard Control'),
+        title: const Text('Standard Control'),
         actions: [
           IconButton(
-            icon: Icon(Icons.settings),
+            icon: const Icon(Icons.settings),
             onPressed: () {
               // TODO: Implement settings
             },
@@ -53,11 +55,11 @@ class _StandardControlViewState extends State<StandardControlView> with SingleTi
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.swap_horiz),
         onPressed: () {
           // TODO: Implement toggle between Diagram and Standard views
         },
         tooltip: 'Toggle View',
+        child: const Icon(Icons.swap_horiz),
       ),
     );
   }
@@ -67,7 +69,7 @@ class _StandardControlViewState extends State<StandardControlView> with SingleTi
       color: Theme.of(context).primaryColor,
       child: TabBar(
         controller: _tabController,
-        tabs: [
+        tabs: const [
           Tab(icon: Icon(Icons.tune), text: 'Controls'),
           Tab(icon: Icon(Icons.playlist_add_check), text: 'Presets'),
           Tab(icon: Icon(Icons.show_chart), text: 'Data Flow'),
@@ -78,12 +80,12 @@ class _StandardControlViewState extends State<StandardControlView> with SingleTi
 
   Widget _buildControlPanel() {
     return ListView(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       children: [
         _buildTemperatureControls(),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         _buildPressureControls(),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         _buildFlowControls(),
       ],
     );
@@ -92,7 +94,7 @@ class _StandardControlViewState extends State<StandardControlView> with SingleTi
   Widget _buildTemperatureControls() {
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -110,9 +112,9 @@ class _StandardControlViewState extends State<StandardControlView> with SingleTi
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             _buildInputField('Heater 1', _isCelsius ? '°C' : '°F', '0-500'),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             _buildInputField('Heater 2', _isCelsius ? '°C' : '°F', '0-500'),
           ],
         ),
@@ -123,7 +125,7 @@ class _StandardControlViewState extends State<StandardControlView> with SingleTi
   Widget _buildPressureControls() {
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -141,7 +143,7 @@ class _StandardControlViewState extends State<StandardControlView> with SingleTi
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             _buildInputField('Chamber Pressure', _isKPa ? 'kPa' : 'psi', '0-1000'),
           ],
         ),
@@ -152,12 +154,12 @@ class _StandardControlViewState extends State<StandardControlView> with SingleTi
   Widget _buildFlowControls() {
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Flow Controls', style: Theme.of(context).textTheme.titleLarge),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             _buildInputField('MFC Flow Rate', 'sccm', '0-1000'),
           ],
         ),
@@ -176,7 +178,7 @@ class _StandardControlViewState extends State<StandardControlView> with SingleTi
           flex: 3,
           child: TextFormField(
             decoration: InputDecoration(
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
               suffixText: unit,
             ),
             keyboardType: TextInputType.number,
@@ -200,7 +202,7 @@ class _StandardControlViewState extends State<StandardControlView> with SingleTi
   Widget _buildPresetConfigurations() {
     return GridView.count(
       crossAxisCount: 2,
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       mainAxisSpacing: 16,
       crossAxisSpacing: 16,
       children: [
@@ -225,7 +227,7 @@ class _StandardControlViewState extends State<StandardControlView> with SingleTi
       },
       child: Text(
         label,
-        style: TextStyle(fontSize: 18),
+        style: const TextStyle(fontSize: 18),
         textAlign: TextAlign.center,
       ),
     );
@@ -235,11 +237,11 @@ class _StandardControlViewState extends State<StandardControlView> with SingleTi
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(Icons.arrow_downward, size: 48),
-        SizedBox(height: 16),
+        const Icon(Icons.arrow_downward, size: 48),
+        const SizedBox(height: 16),
         Text('Data Flow', style: Theme.of(context).textTheme.headlineSmall),
-        SizedBox(height: 16),
-        Card(
+        const SizedBox(height: 16),
+        const Card(
           margin: EdgeInsets.all(16),
           child: Padding(
             padding: EdgeInsets.all(16),

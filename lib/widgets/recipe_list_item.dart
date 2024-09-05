@@ -20,7 +20,7 @@ class RecipeListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -28,15 +28,15 @@ class RecipeListItem extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: ListTile(
-        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         title: Text(
           recipe.name,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.w500,
             fontSize: 18,
@@ -50,7 +50,7 @@ class RecipeListItem extends StatelessWidget {
           ),
         ),
         trailing: IconButton(
-          icon: Icon(Icons.more_horiz, color: Colors.black),
+          icon: const Icon(Icons.more_horiz, color: Colors.black),
           onPressed: () => _showOptions(context),
         ),
       ),
@@ -61,7 +61,7 @@ class RecipeListItem extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (BuildContext context) {
@@ -70,32 +70,32 @@ class RecipeListItem extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               ListTile(
-                leading: Icon(Icons.edit, color: Colors.black),
-                title: Text('Edit', style: TextStyle(color: Colors.black)),
+                leading: const Icon(Icons.edit, color: Colors.black),
+                title: const Text('Edit', style: TextStyle(color: Colors.black)),
                 onTap: () {
                   Navigator.pop(context);
                   onEdit();
                 },
               ),
               ListTile(
-                leading: Icon(Icons.play_arrow, color: Colors.black),
-                title: Text('Simulate', style: TextStyle(color: Colors.black)),
+                leading: const Icon(Icons.play_arrow, color: Colors.black),
+                title: const Text('Simulate', style: TextStyle(color: Colors.black)),
                 onTap: () {
                   Navigator.pop(context);
                   onSimulate();
                 },
               ),
               ListTile(
-                leading: Icon(Icons.content_copy, color: Colors.black),
-                title: Text('Save as Template', style: TextStyle(color: Colors.black)),
+                leading: const Icon(Icons.content_copy, color: Colors.black),
+                title: const Text('Save as Template', style: TextStyle(color: Colors.black)),
                 onTap: () {
                   Navigator.pop(context);
                   onSaveAsTemplate();
                 },
               ),
               ListTile(
-                leading: Icon(Icons.delete, color: Colors.red),
-                title: Text('Delete', style: TextStyle(color: Colors.red)),
+                leading: const Icon(Icons.delete, color: Colors.red),
+                title: const Text('Delete', style: TextStyle(color: Colors.red)),
                 onTap: () {
                   Navigator.pop(context);
                   onDelete();

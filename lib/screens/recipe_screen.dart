@@ -79,15 +79,15 @@ class _RecipeScreenState extends State<RecipeScreen> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: Text('Delete Recipe'),
+        title: const Text('Delete Recipe'),
         content: Text('Are you sure you want to delete ${recipe.name}?'),
         actions: [
           TextButton(
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
             onPressed: () => Navigator.of(context).pop(false),
           ),
           TextButton(
-            child: Text('Delete', style: TextStyle(color: Colors.red)),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
             onPressed: () => Navigator.of(context).pop(true),
           ),
         ],
@@ -115,11 +115,11 @@ class _RecipeScreenState extends State<RecipeScreen> {
         elevation: 0,
         title: Text(
           _isEditMode ? 'Edit Recipe' : 'Recipes',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300, fontSize: 28),
+          style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w300, fontSize: 28),
         ),
         leading: _isEditMode
             ? IconButton(
-          icon: Icon(Icons.close, color: Colors.black),
+          icon: const Icon(Icons.close, color: Colors.black),
           onPressed: () {
             setState(() {
               _currentRecipe = null;
@@ -131,7 +131,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
         actions: [
           if (_isEditMode)
             TextButton(
-              child: Text('Save', style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500)),
+              child: const Text('Save', style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500)),
               onPressed: () {
                 if (_currentRecipe != null) {
                   _saveRecipe(_currentRecipe!);
@@ -140,7 +140,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
             )
           else
             IconButton(
-              icon: Icon(Icons.add, color: Colors.black),
+              icon: const Icon(Icons.add, color: Colors.black),
               onPressed: _createNewRecipe,
             ),
         ],
@@ -167,12 +167,12 @@ class _RecipeScreenState extends State<RecipeScreen> {
   }
   Widget _buildToggle() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _buildToggleButton('Recipes', !_showTemplates),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
           _buildToggleButton('Templates', _showTemplates),
         ],
       ),
@@ -187,7 +187,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
         });
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         decoration: BoxDecoration(
           color: isActive ? Colors.black : Colors.white,
           border: Border.all(color: Colors.black, width: 2),
@@ -233,9 +233,9 @@ class _RecipeScreenState extends State<RecipeScreen> {
       itemBuilder: (context, index) {
         final template = _templates[index];
         return ListTile(
-          title: Text(template.name, style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
+          title: Text(template.name, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
           subtitle: Text(template.category, style: TextStyle(color: Colors.grey[600])),
-          trailing: Icon(Icons.arrow_forward_ios, color: Colors.black, size: 18),
+          trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black, size: 18),
           onTap: () => _createNewRecipe(template: template),
         );
       },

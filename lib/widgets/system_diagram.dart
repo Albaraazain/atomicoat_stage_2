@@ -40,8 +40,8 @@ class SystemDiagram extends StatelessWidget {
             _buildValve(width, height, 'v2', 'V2', 0.44, 0.4),
 
             // Connections from valves to heaters
-            _buildConnection(width, height, 0.385, 0.45, 0.385, 0.6),
-            _buildConnection(width, height, 0.465, 0.45, 0.465, 0.6),
+            _buildConnection(width, height, 0.385, 0.53, 0.465, 0.6),
+            _buildConnection(width, height, 0.465, 0.53, 0.465, 0.6),
 
             // Heaters
             _buildComponent(width, height, 'h1', 'H1', 0.34, 0.6, 0.09, 0.08, Colors.red[100]!),
@@ -70,7 +70,7 @@ class SystemDiagram extends StatelessWidget {
             child: Text(
               label,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -95,7 +95,7 @@ class SystemDiagram extends StatelessWidget {
           child: Center(
             child: Text(
               label,
-              style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
             ),
           ),
         ),

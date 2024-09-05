@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
-import '../providers/app_state_provider.dart';
 
 class PLCImageScreen extends StatefulWidget {
+  const PLCImageScreen({super.key});
+
   @override
   _PLCImageScreenState createState() => _PLCImageScreenState();
 }
@@ -16,12 +16,12 @@ class _PLCImageScreenState extends State<PLCImageScreen> {
   };
 
   final List<Offset> valvePositions = [
-    Offset(252, 180),
-    Offset(266, 180),
-    Offset(110, 225),
-    Offset(155, 225),
-    Offset(110, 245),
-    Offset(155, 245),
+    const Offset(252, 180),
+    const Offset(266, 180),
+    const Offset(110, 225),
+    const Offset(155, 225),
+    const Offset(110, 245),
+    const Offset(155, 245),
   ];
 
   List<bool> valveStates = List.generate(6, (index) => false);
@@ -38,7 +38,7 @@ class _PLCImageScreenState extends State<PLCImageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Diagram View'),
+        title: const Text('Diagram View'),
       ),
       body: Column(
         children: [
@@ -62,10 +62,10 @@ class _PLCImageScreenState extends State<PLCImageScreen> {
             padding: const EdgeInsets.only(bottom: 20.0),
             child: ElevatedButton(
               onPressed: _startMachine,
-              child: Text('Start Machine'),
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
               ),
+              child: const Text('Start Machine'),
             ),
           ),
         ],
@@ -77,7 +77,7 @@ class _PLCImageScreenState extends State<PLCImageScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('PLC Values'),
+        title: const Text('PLC Values'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: plcValues.entries.map((entry) =>
@@ -86,7 +86,7 @@ class _PLCImageScreenState extends State<PLCImageScreen> {
         ),
         actions: [
           TextButton(
-            child: Text('Close'),
+            child: const Text('Close'),
             onPressed: () => Navigator.of(context).pop(),
           ),
         ],

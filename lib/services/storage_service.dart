@@ -79,30 +79,18 @@ class StorageService {
 
   // Recipe methods
   static Future<List<Recipe>> getAllRecipes() async {
-    if (_recipeBox == null) {
-      throw StateError('Recipe box is not initialized');
-    }
-    return _recipeBox!.values.toList();
+    return _recipeBox.values.toList();
   }
 
   static Future<void> saveRecipe(Recipe recipe) async {
-    if (_recipeBox == null) {
-      throw StateError('Recipe box is not initialized');
-    }
-    await _recipeBox!.put(recipe.id, recipe);
+    await _recipeBox.put(recipe.id, recipe);
   }
 
   static Future<void> deleteRecipe(String id) async {
-    if (_recipeBox == null) {
-      throw StateError('Recipe box is not initialized');
-    }
-    await _recipeBox!.delete(id);
+    await _recipeBox.delete(id);
   }
 
   static Future<Recipe?> getRecipe(String id) async {
-    if (_recipeBox == null) {
-      throw StateError('Recipe box is not initialized');
-    }
-    return _recipeBox!.get(id);
+    return _recipeBox.get(id);
   }
 }

@@ -20,14 +20,14 @@ class AppRoutes {
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
-      home: (context) => HomeScreen(),
+      home: (context) => const HomeScreen(),
       systemControl: (context) => const SystemControlScreen(),
       recipe: (context) => const RecipeScreen(),
       monitoring: (context) => const MonitoringScreen(),
-      settings: (context) => SettingsScreen(),
-      plcTroubleshooter: (context) => PLCTroubleshooterScreen(),
-      plcImage: (context) => PLCImageScreen(),
-      machineStatusChat: (context) => MachineStatusChatScreen(),
+      settings: (context) => const SettingsScreen(),
+      plcTroubleshooter: (context) => const PLCTroubleshooterScreen(),
+      plcImage: (context) => const PLCImageScreen(),
+      machineStatusChat: (context) => const MachineStatusChatScreen(),
     };
   }
 }

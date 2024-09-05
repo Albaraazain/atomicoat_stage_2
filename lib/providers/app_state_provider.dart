@@ -30,7 +30,7 @@ class AppStateProvider with ChangeNotifier {
   }
 
   void _startPeriodicUpdates() {
-    _updateTimer = Timer.periodic(Duration(seconds: 1), (_) => _updateSystemState());
+    _updateTimer = Timer.periodic(const Duration(seconds: 1), (_) => _updateSystemState());
   }
 
   void _updateSystemState() {

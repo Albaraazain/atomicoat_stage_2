@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:async';
 
 import 'app.dart';
@@ -35,7 +34,7 @@ void main() async {
   }
 
   if (!initializationSuccessful) {
-    runApp(ErrorApp());
+    runApp(const ErrorApp());
     return;
   }
 
@@ -64,9 +63,11 @@ void main() async {
 }
 
 class ErrorApp extends StatelessWidget {
+  const ErrorApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: Scaffold(
         body: Center(
           child: Text('Failed to initialize the app. Please try again later.'),

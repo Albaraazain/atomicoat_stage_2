@@ -15,7 +15,7 @@ class MonitoringScreen extends StatefulWidget {
 }
 
 class _MonitoringScreenState extends State<MonitoringScreen> {
-  List<Map<String, dynamic>> _events = [];
+  final List<Map<String, dynamic>> _events = [];
   late Timer _timer;
   List<FlSpot> temperatureData = [];
   List<FlSpot> pressureData = [];
@@ -26,7 +26,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
   void initState() {
     super.initState();
     _initializeData();
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) => _updateParameters());
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) => _updateParameters());
   }
 
   void _initializeData() {
@@ -90,10 +90,10 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('System Monitoring', style: TextStyle(color: Colors.black)),
+        title: const Text('System Monitoring', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Consumer<AppStateProvider>(
         builder: (context, appState, child) {
@@ -102,13 +102,13 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: StatusIndicator(status: appState.systemState.isRunning ? 'Running' : 'Stopped'),
                 ),
                 Expanded(
                   flex: 2,
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                     child: Column(
                       children: [
                         Expanded(child: _buildChart()),
@@ -117,7 +117,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
                     ),
                   ),
                 ),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text('Recent Events', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ),
@@ -128,11 +128,11 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
                     itemBuilder: (context, index) {
                       final event = _events[index];
                       return ListTile(
-                        title: Text(event['message'], style: TextStyle(fontWeight: FontWeight.w500)),
-                        subtitle: Text(event['details'], style: TextStyle(fontSize: 12)),
+                        title: Text(event['message'], style: const TextStyle(fontWeight: FontWeight.w500)),
+                        subtitle: Text(event['details'], style: const TextStyle(fontSize: 12)),
                         trailing: Text(
                           '${event['timestamp'].hour.toString().padLeft(2, '0')}:${event['timestamp'].minute.toString().padLeft(2, '0')}:${event['timestamp'].second.toString().padLeft(2, '0')}',
-                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                          style: const TextStyle(fontSize: 12, color: Colors.grey),
                         ),
                       );
                     },
@@ -149,21 +149,21 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
   Widget _buildChart() {
     return LineChart(
       LineChartData(
-        gridData: FlGridData(show: true, drawVerticalLine: true),
+        gridData: const FlGridData(show: true, drawVerticalLine: true),
         titlesData: FlTitlesData(
-          bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          bottomTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
               getTitlesWidget: (value, meta) {
                 return Text(value.toInt().toString(),
-                    style: TextStyle(color: Colors.grey, fontSize: 10));
+                    style: const TextStyle(color: Colors.grey, fontSize: 10));
               },
               reservedSize: 30,
             ),
           ),
-          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         ),
         borderData: FlBorderData(show: true),
         minX: xValue - 59.0,
@@ -177,7 +177,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
             color: Colors.red,
             barWidth: 2,
             isStrokeCapRound: true,
-            dotData: FlDotData(show: false),
+            dotData: const FlDotData(show: false),
             belowBarData: BarAreaData(show: false),
           ),
           LineChartBarData(
@@ -186,7 +186,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
             color: Colors.blue,
             barWidth: 2,
             isStrokeCapRound: true,
-            dotData: FlDotData(show: false),
+            dotData: const FlDotData(show: false),
             belowBarData: BarAreaData(show: false),
           ),
           LineChartBarData(
@@ -195,7 +195,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
             color: Colors.green,
             barWidth: 2,
             isStrokeCapRound: true,
-            dotData: FlDotData(show: false),
+            dotData: const FlDotData(show: false),
             belowBarData: BarAreaData(show: false),
           ),
         ],
@@ -210,9 +210,9 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _buildLegendItem('Temp (°C)', Colors.red),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
           _buildLegendItem('Pressure (x10 kPa)', Colors.blue),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
           _buildLegendItem('Flow (sccm)', Colors.green),
         ],
       ),
@@ -227,8 +227,8 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
           height: 12,
           color: color,
         ),
-        SizedBox(width: 4),
-        Text(label, style: TextStyle(fontSize: 10)),
+        const SizedBox(width: 4),
+        Text(label, style: const TextStyle(fontSize: 10)),
       ],
     );
   }

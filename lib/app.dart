@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'screens/home_screen.dart';
-import 'providers/app_state_provider.dart';
 import 'providers/theme_provider.dart';
 import 'utils/constants.dart';
 

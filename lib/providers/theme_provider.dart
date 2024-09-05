@@ -22,7 +22,7 @@ class ThemeProvider with ChangeNotifier {
       brightness: Brightness.light,
       primarySwatch: Colors.blue,
       scaffoldBackgroundColor: Colors.grey[100],
-      appBarTheme: AppBarTheme(
+      appBarTheme: const AppBarTheme(
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0,
@@ -42,7 +42,7 @@ class ThemeProvider with ChangeNotifier {
       brightness: Brightness.dark,
       primarySwatch: Colors.blue,
       scaffoldBackgroundColor: Colors.grey[900],
-      appBarTheme: AppBarTheme(
+      appBarTheme: const AppBarTheme(
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         elevation: 0,

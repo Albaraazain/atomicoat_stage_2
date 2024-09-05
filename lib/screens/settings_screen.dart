@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/models.dart';
 import '../providers/app_state_provider.dart';
-import '../models/app_settings.dart';
-import '../models/user_profile.dart';
 
 class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
+
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
 }
@@ -47,7 +47,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     appState.updateAppSettings(updatedSettings);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Settings saved')),
+      const SnackBar(content: Text('Settings saved')),
     );
   }
 
@@ -55,26 +55,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
+        title: const Text('Settings'),
       ),
       body: Consumer<AppStateProvider>(
         builder: (context, appState, child) {
           return ListView(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             children: [
-              Text('User Profile', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 8),
+              const Text('User Profile', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
               TextField(
                 controller: _nameController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Name',
                   border: OutlineInputBorder(),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               DropdownButtonFormField<String>(
                 value: _selectedRole,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Role',
                   border: OutlineInputBorder(),
                 ),
@@ -87,12 +87,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   });
                 },
               ),
-              SizedBox(height: 24),
-              Text('App Settings', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 8),
+              const SizedBox(height: 24),
+              const Text('App Settings', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
               DropdownButtonFormField<String>(
                 value: _selectedLanguage,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Language',
                   border: OutlineInputBorder(),
                 ),
@@ -105,10 +105,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   });
                 },
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               ElevatedButton(
-                child: Text('Save Settings'),
                 onPressed: _saveSettings,
+                child: const Text('Save Settings'),
               ),
             ],
           );

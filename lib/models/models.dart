@@ -17,20 +17,20 @@ class SystemState {
     Map<String, bool> componentStatus = const {},
     Map<String, double> componentTemperatures = const {},
     Map<String, double> componentSetTemperatures = const {},
-  }) : this.componentStatus = {
+  }) : componentStatus = {
     'heater': false,
     'pump': false,
     'valve': false,
     ...componentStatus,
   },
-        this.componentTemperatures = {
+        componentTemperatures = {
           'frontline_heater': 25.0,
           'h1': 25.0,
           'h2': 32.0,
           'backline_heater': 25.0,
           ...componentTemperatures,
         },
-        this.componentSetTemperatures = {
+        componentSetTemperatures = {
           'frontline_heater': 25.0,
           'h1': 25.0,
           'h2': 32.0,

@@ -9,73 +9,58 @@ class SystemDiagram extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        final double width = constraints.maxWidth;
+        final double height = constraints.maxHeight;
+
         return Stack(
           children: [
             // Main pipeline
             Positioned(
-              left: constraints.maxWidth * 0.05,
-              top: constraints.maxHeight * 0.2,
-              right: constraints.maxWidth * 0.05,
-              child: Container(
-                height: 2,
-                color: Colors.black,
-              ),
+              left: width * 0.05,
+              top: height * 0.2,
+              right: width * 0.05,
+              child: Container(height: 2, color: Colors.black),
             ),
 
-            // N2 GEN
-            _buildComponent(constraints, 'n2gen', 'N2\nGEN', 0.05, 0.15, Colors.blue[100]!, width: 0.1, height: 0.1),
-
-            // MFC
-            _buildComponent(constraints, 'mfc', 'MFC', 0.2, 0.15, Colors.green[100]!, width: 0.1, height: 0.1),
-
-            // Frontline Heater
-            _buildComponent(constraints, 'frontline_heater', 'Frontline\nHeater', 0.35, 0.15, Colors.orange[100]!, width: 0.25, height: 0.1),
-
-            // CHAMBER
-            _buildComponent(constraints, 'chamber', 'CHAMBER', 0.65, 0.15, Colors.purple[100]!, width: 0.15, height: 0.1),
-
-            // PC
-            _buildComponent(constraints, 'pc', 'PC', 0.85, 0.15, Colors.cyan[100]!, width: 0.05, height: 0.1),
-
-            // PU (Pump)
-            _buildComponent(constraints, 'pump', 'PU', 0.95, 0.15, Colors.indigo[100]!, width: 0.05, height: 0.1),
+            // Components on the main line
+            _buildComponent(width, height, 'n2gen', 'N2\nGEN', 0.05, 0.15, 0.08, 0.1, Colors.blue[100]!),
+            _buildComponent(width, height, 'mfc', 'MFC', 0.18, 0.15, 0.08, 0.1, Colors.green[100]!),
+            _buildComponent(width, height, 'frontline_heater', 'Frontline\nHeater', 0.31, 0.15, 0.23, 0.1, Colors.orange[100]!),
+            _buildComponent(width, height, 'chamber', 'CHAMBER', 0.59, 0.15, 0.13, 0.1, Colors.purple[100]!),
+            _buildComponent(width, height, 'backline_heater', 'Back', 0.77, 0.15, 0.08, 0.1, Colors.orange[100]!),
+            _buildComponent(width, height, 'pc', 'PC', 0.88, 0.15, 0.05, 0.1, Colors.cyan[100]!),
+            _buildComponent(width, height, 'pump', 'PU', 0.95, 0.15, 0.05, 0.1, Colors.indigo[100]!),
 
             // Connections from Frontline Heater to valves
-            _buildConnection(constraints, 0.425, 0.25, 0.425, 0.35),
-            _buildConnection(constraints, 0.575, 0.25, 0.575, 0.35),
+            _buildConnection(width, height, 0.385, 0.25, 0.385, 0.4),
+            _buildConnection(width, height, 0.465, 0.25, 0.465, 0.4),
 
             // Valves
-            _buildValve(constraints, 'v1', 'V1', 0.4, 0.35),
-            _buildValve(constraints, 'v2', 'V2', 0.55, 0.35),
+            _buildValve(width, height, 'v1', 'V1', 0.36, 0.4),
+            _buildValve(width, height, 'v2', 'V2', 0.44, 0.4),
 
             // Connections from valves to heaters
-            _buildConnection(constraints, 0.425, 0.4, 0.425, 0.5),
-            _buildConnection(constraints, 0.575, 0.4, 0.575, 0.5),
+            _buildConnection(width, height, 0.385, 0.45, 0.385, 0.6),
+            _buildConnection(width, height, 0.465, 0.45, 0.465, 0.6),
 
             // Heaters
-            _buildComponent(constraints, 'h1', 'H1', 0.375, 0.5, Colors.red[100]!, width: 0.1, height: 0.08),
-            _buildComponent(constraints, 'h2', 'H2', 0.525, 0.5, Colors.red[100]!, width: 0.1, height: 0.08),
-
-            // Connection to Back heater
-            _buildConnection(constraints, 0.8, 0.25, 0.8, 0.35),
-
-            // Back (Backline Heater)
-            _buildComponent(constraints, 'backline_heater', 'Back', 0.75, 0.35, Colors.orange[100]!, width: 0.1, height: 0.08),
+            _buildComponent(width, height, 'h1', 'H1', 0.34, 0.6, 0.09, 0.08, Colors.red[100]!),
+            _buildComponent(width, height, 'h2', 'H2', 0.42, 0.6, 0.09, 0.08, Colors.red[100]!),
           ],
         );
       },
     );
   }
 
-  Widget _buildComponent(BoxConstraints constraints, String id, String label, double x, double y, Color color, {required double width, required double height}) {
+  Widget _buildComponent(double width, double height, String id, String label, double x, double y, double widthFactor, double heightFactor, Color color) {
     return Positioned(
-      left: constraints.maxWidth * x,
-      top: constraints.maxHeight * y,
+      left: width * x,
+      top: height * y,
       child: GestureDetector(
         onTap: () => onComponentClick(id),
         child: Container(
-          width: constraints.maxWidth * width,
-          height: constraints.maxHeight * height,
+          width: width * widthFactor,
+          height: height * heightFactor,
           decoration: BoxDecoration(
             color: color,
             border: Border.all(color: Colors.black),
@@ -93,15 +78,15 @@ class SystemDiagram extends StatelessWidget {
     );
   }
 
-  Widget _buildValve(BoxConstraints constraints, String id, String label, double x, double y) {
+  Widget _buildValve(double width, double height, String id, String label, double x, double y) {
     return Positioned(
-      left: constraints.maxWidth * x,
-      top: constraints.maxHeight * y,
+      left: width * x,
+      top: height * y,
       child: GestureDetector(
         onTap: () => onComponentClick(id),
         child: Container(
-          width: constraints.maxWidth * 0.05,
-          height: constraints.maxWidth * 0.05,
+          width: width * 0.05,
+          height: width * 0.05,
           decoration: BoxDecoration(
             color: Colors.green[100],
             shape: BoxShape.circle,
@@ -118,13 +103,13 @@ class SystemDiagram extends StatelessWidget {
     );
   }
 
-  Widget _buildConnection(BoxConstraints constraints, double startX, double startY, double endX, double endY) {
+  Widget _buildConnection(double width, double height, double startX, double startY, double endX, double endY) {
     return Positioned(
-      left: constraints.maxWidth * startX,
-      top: constraints.maxHeight * startY,
+      left: width * startX,
+      top: height * startY,
       child: Container(
         width: 2,
-        height: constraints.maxHeight * (endY - startY),
+        height: height * (endY - startY),
         color: Colors.black,
       ),
     );

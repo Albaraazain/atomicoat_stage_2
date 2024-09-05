@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SystemDiagram extends StatelessWidget {
   final Function(String) onComponentClick;
@@ -9,110 +10,106 @@ class SystemDiagram extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final double width = constraints.maxWidth;
-        final double height = constraints.maxHeight;
-
-        return Stack(
-          children: [
-            // Main pipeline
-            Positioned(
-              left: width * 0.05,
-              top: height * 0.2,
-              right: width * 0.05,
-              child: Container(height: 2, color: Colors.black),
-            ),
-
-            // Components on the main line
-            _buildComponent(width, height, 'n2gen', 'N2\nGEN', 0.05, 0.15, 0.08, 0.1, Colors.blue[100]!),
-            _buildComponent(width, height, 'mfc', 'MFC', 0.18, 0.15, 0.08, 0.1, Colors.green[100]!),
-            _buildComponent(width, height, 'frontline_heater', 'Frontline\nHeater', 0.31, 0.15, 0.23, 0.1, Colors.orange[100]!),
-            _buildComponent(width, height, 'chamber', 'CHAMBER', 0.59, 0.15, 0.13, 0.1, Colors.purple[100]!),
-            _buildComponent(width, height, 'backline_heater', 'Back', 0.77, 0.15, 0.08, 0.1, Colors.orange[100]!),
-            _buildComponent(width, height, 'pc', 'PC', 0.88, 0.15, 0.05, 0.1, Colors.cyan[100]!),
-            _buildComponent(width, height, 'pump', 'PU', 0.95, 0.15, 0.05, 0.1, Colors.indigo[100]!),
-
-            // Connections from Frontline Heater to valves
-            _buildConnection(width, height, 0.385, 0.25, 0.385, 0.4),
-            _buildConnection(width, height, 0.465, 0.25, 0.465, 0.4),
-
-            // Valves
-            _buildValve(width, height, 'v1', 'V1', 0.36, 0.4),
-            _buildValve(width, height, 'v2', 'V2', 0.44, 0.4),
-
-            // Connections from valves to heaters
-            _buildConnection(width, height, 0.385, 0.53, 0.385, 0.6),
-            _buildConnection(width, height, 0.465, 0.53, 0.465, 0.6),
-
-            // Heaters (width reduced from 0.09 to 0.07 and repositioned to stay centered)
-            _buildComponent(width, height, 'h1', 'H1', 0.35, 0.6, 0.07, 0.08, Colors.red[100]!),
-            _buildComponent(width, height, 'h2', 'H2', 0.43, 0.6, 0.07, 0.08, Colors.red[100]!),
-          ],
+        return GestureDetector(
+          onTapDown: (TapDownDetails details) {
+            final RenderBox box = context.findRenderObject() as RenderBox;
+            final localPosition = box.globalToLocal(details.globalPosition);
+            final relativeX = localPosition.dx / constraints.maxWidth;
+            final relativeY = localPosition.dy / constraints.maxHeight;
+            _handleTap(relativeX, relativeY);
+          },
+          child: SvgPicture.string(
+            _svgContent,
+            width: constraints.maxWidth,
+            height: constraints.maxHeight,
+          ),
         );
       },
     );
   }
 
-
-  Widget _buildComponent(double width, double height, String id, String label, double x, double y, double widthFactor, double heightFactor, Color color) {
-    return Positioned(
-      left: width * x,
-      top: height * y,
-      child: GestureDetector(
-        onTap: () => onComponentClick(id),
-        child: Container(
-          width: width * widthFactor,
-          height: height * heightFactor,
-          decoration: BoxDecoration(
-            color: color,
-            border: Border.all(color: Colors.black),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Center(
-            child: Text(
-              label,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-      ),
-    );
+  void _handleTap(double relativeX, double relativeY) {
+    if (relativeY > 0.375 && relativeY < 0.625) {
+      if (relativeX < 0.13) onComponentClick('n2gen');
+      else if (relativeX < 0.26) onComponentClick('mfc');
+      else if (relativeX < 0.54) onComponentClick('frontline_heater');
+      else if (relativeX < 0.72) onComponentClick('chamber');
+      else if (relativeX < 0.85) onComponentClick('backline_heater');
+      else if (relativeX < 0.93) onComponentClick('pc');
+      else onComponentClick('pump');
+    } else if (relativeY > 0.75 && relativeY < 0.85) {
+      if (relativeX > 0.365 && relativeX < 0.405) onComponentClick('v1');
+      else if (relativeX > 0.445 && relativeX < 0.485) onComponentClick('v2');
+    } else if (relativeY > 0.9) {
+      if (relativeX > 0.35 && relativeX < 0.42) onComponentClick('h1');
+      else if (relativeX > 0.43 && relativeX < 0.5) onComponentClick('h2');
+    }
   }
 
-  Widget _buildValve(double width, double height, String id, String label, double x, double y) {
-    return Positioned(
-      left: width * x,
-      top: height * y,
-      child: GestureDetector(
-        onTap: () => onComponentClick(id),
-        child: Container(
-          width: width * 0.05,
-          height: width * 0.05,
-          decoration: BoxDecoration(
-            color: Colors.green[100],
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.black),
-          ),
-          child: Center(
-            child: Text(
-              label,
-              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildConnection(double width, double height, double startX, double startY, double endX, double endY) {
-    return Positioned(
-      left: width * startX,
-      top: height * startY,
-      child: Container(
-        width: 2,
-        height: height * (endY - startY),
-        color: Colors.black,
-      ),
-    );
-  }
+  // SVG content as a string
+  static const _svgContent = '''
+<svg viewBox="0 0 1000 400" xmlns="http://www.w3.org/2000/svg">
+  <g>
+    <path d="M50 200 H950" stroke="#333333" stroke-width="2" fill="none"/>
+    <path d="M385 200 V300 M465 200 V300 M385 340 V370 M465 340 V370" stroke="#333333" stroke-width="2" fill="none"/>
+  </g>
+  <g>
+    <g>
+      <rect x="50" y="150" width="80" height="100" fill="#ffffff"/>
+      <rect x="50" y="150" width="80" height="100" fill="#3498db" fill-opacity="0.2"/>
+      <text x="90" y="210" text-anchor="middle" font-size="14" fill="#333333">N2 GEN</text>
+    </g>
+    <g>
+      <rect x="180" y="150" width="80" height="100" fill="#ffffff"/>
+      <rect x="180" y="150" width="80" height="100" fill="#3498db" fill-opacity="0.2"/>
+      <text x="220" y="210" text-anchor="middle" font-size="14" fill="#333333">MFC</text>
+    </g>
+    <g>
+      <rect x="310" y="150" width="230" height="100" fill="#ffffff"/>
+      <rect x="310" y="150" width="230" height="100" fill="#e74c3c" fill-opacity="0.2"/>
+      <text x="425" y="210" text-anchor="middle" font-size="14" fill="#333333">Frontline Heater</text>
+    </g>
+    <g>
+      <rect x="590" y="150" width="130" height="100" fill="#ffffff"/>
+      <rect x="590" y="150" width="130" height="100" fill="#3498db" fill-opacity="0.2"/>
+      <text x="655" y="210" text-anchor="middle" font-size="14" fill="#333333">CHAMBER</text>
+    </g>
+    <g>
+      <rect x="770" y="150" width="80" height="100" fill="#ffffff"/>
+      <rect x="770" y="150" width="80" height="100" fill="#e74c3c" fill-opacity="0.2"/>
+      <text x="810" y="210" text-anchor="middle" font-size="14" fill="#333333">Back</text>
+    </g>
+    <g>
+      <rect x="880" y="150" width="50" height="100" fill="#ffffff"/>
+      <rect x="880" y="150" width="50" height="100" fill="#3498db" fill-opacity="0.2"/>
+      <text x="905" y="210" text-anchor="middle" font-size="14" fill="#333333">PC</text>
+    </g>
+    <g>
+      <rect x="950" y="150" width="50" height="100" fill="#ffffff"/>
+      <rect x="950" y="150" width="50" height="100" fill="#3498db" fill-opacity="0.2"/>
+      <text x="975" y="210" text-anchor="middle" font-size="14" fill="#333333">PU</text>
+    </g>
+    <g>
+      <circle cx="385" cy="320" r="20" fill="#ffffff"/>
+      <circle cx="385" cy="320" r="20" fill="#333333" fill-opacity="0.2"/>
+      <text x="385" y="325" text-anchor="middle" font-size="12" fill="#333333">V1</text>
+    </g>
+    <g>
+      <circle cx="465" cy="320" r="20" fill="#ffffff"/>
+      <circle cx="465" cy="320" r="20" fill="#333333" fill-opacity="0.2"/>
+      <text x="465" y="325" text-anchor="middle" font-size="12" fill="#333333">V2</text>
+    </g>
+    <g>
+      <rect x="350" y="370" width="70" height="30" fill="#ffffff"/>
+      <rect x="350" y="370" width="70" height="30" fill="#e74c3c" fill-opacity="0.2"/>
+      <text x="385" y="390" text-anchor="middle" font-size="12" fill="#333333">H1</text>
+    </g>
+    <g>
+      <rect x="430" y="370" width="70" height="30" fill="#ffffff"/>
+      <rect x="430" y="370" width="70" height="30" fill="#e74c3c" fill-opacity="0.2"/>
+      <text x="465" y="390" text-anchor="middle" font-size="12" fill="#333333">H2</text>
+    </g>
+  </g>
+</svg>
+  ''';
 }

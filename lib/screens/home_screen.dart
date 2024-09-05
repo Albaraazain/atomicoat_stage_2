@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import '../widgets/status_indicator.dart';
+import '../utils/constants.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -42,10 +43,13 @@ class HomeScreen extends StatelessWidget {
                   mainAxisSpacing: 20,
                 ),
                 delegate: SliverChildListDelegate([
-                  _buildActionCard(context, 'System\nControl', CupertinoIcons.slider_horizontal_3, '/system_control'),
-                  _buildActionCard(context, 'Recipes', CupertinoIcons.book, '/recipe'),
-                  _buildActionCard(context, 'Monitoring', CupertinoIcons.graph_square, '/monitoring'),
-                  _buildActionCard(context, 'Settings', CupertinoIcons.settings, '/settings'),
+                  _buildActionCard(context, 'System\nControl', CupertinoIcons.slider_horizontal_3, AppRoutes.systemControl),
+                  _buildActionCard(context, 'Recipes', CupertinoIcons.book, AppRoutes.recipe),
+                  _buildActionCard(context, 'Monitoring', CupertinoIcons.graph_square, AppRoutes.monitoring),
+                  _buildActionCard(context, 'Settings', CupertinoIcons.settings, AppRoutes.settings),
+                  _buildActionCard(context, 'PLC\nTroubleshooter', CupertinoIcons.wrench_fill, AppRoutes.plcTroubleshooter),
+                  _buildActionCard(context, 'PLC\nDiagram', CupertinoIcons.chart_bar_fill, AppRoutes.plcImage),
+                  _buildActionCard(context, 'Machine\nStatus Chat', CupertinoIcons.chat_bubble_2_fill, AppRoutes.machineStatusChat),  // Add this line
                 ]),
               ),
             ),

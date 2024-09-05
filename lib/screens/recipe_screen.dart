@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../models/recipe.dart';
-import '../providers/app_state_provider.dart';
 import '../services/storage_service.dart';
 import '../widgets/recipe_list_item.dart';
 import '../widgets/recipe_builder.dart';
@@ -16,54 +14,55 @@ class RecipeScreen extends StatefulWidget {
 
 class _RecipeScreenState extends State<RecipeScreen> {
   List<Recipe> _recipes = [];
-  String _sortBy = 'name';
+  List<Recipe> _templates = [];
   Recipe? _currentRecipe;
+  bool _isEditMode = false;
+  bool _showTemplates = false;
 
   @override
   void initState() {
     super.initState();
     _loadRecipes();
+    _loadTemplates();
   }
 
   Future<void> _loadRecipes() async {
     final recipes = await StorageService.getAllRecipes();
     setState(() {
       _recipes = recipes;
-      _sortRecipes();
     });
   }
 
-  void _sortRecipes() {
-    _recipes.sort((a, b) {
-      switch (_sortBy) {
-        case 'name':
-          return a.name.compareTo(b.name);
-        case 'category':
-          return a.category.compareTo(b.category);
-        case 'lastModified':
-          return b.lastModified.compareTo(a.lastModified);
-        default:
-          return 0;
-      }
-    });
-  }
-
-  void _createNewRecipe() {
+  Future<void> _loadTemplates() async {
+    final templates = await StorageService.getAllTemplates();
     setState(() {
-      _currentRecipe = Recipe(
+      _templates = templates;
+    });
+  }
+
+  void _createNewRecipe({Recipe? template}) {
+    setState(() {
+      _currentRecipe = template?.copyWith(
         id: DateTime.now().toString(),
         name: 'New Recipe',
-        category: 'Default',
-        steps: [],
         lastModified: DateTime.now(),
-        version: '1.0',
-      );
+      ) ??
+          Recipe(
+            id: DateTime.now().toString(),
+            name: 'New Recipe',
+            category: 'Default',
+            steps: [],
+            lastModified: DateTime.now(),
+            version: '1.0',
+          );
+      _isEditMode = true;
     });
   }
 
   void _editRecipe(Recipe recipe) {
     setState(() {
       _currentRecipe = recipe;
+      _isEditMode = true;
     });
   }
 
@@ -72,6 +71,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
     _loadRecipes();
     setState(() {
       _currentRecipe = null;
+      _isEditMode = false;
     });
   }
 
@@ -87,7 +87,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
             onPressed: () => Navigator.of(context).pop(false),
           ),
           TextButton(
-            child: Text('Delete'),
+            child: Text('Delete', style: TextStyle(color: Colors.red)),
             onPressed: () => Navigator.of(context).pop(true),
           ),
         ],
@@ -99,46 +99,108 @@ class _RecipeScreenState extends State<RecipeScreen> {
     }
   }
 
+  void _showSimulation(Recipe recipe) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => RecipeSimulation(recipe: recipe)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Recipes'),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Text(
+          _isEditMode ? 'Edit Recipe' : 'Recipes',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300, fontSize: 28),
+        ),
+        leading: _isEditMode
+            ? IconButton(
+          icon: Icon(Icons.close, color: Colors.black),
+          onPressed: () {
+            setState(() {
+              _currentRecipe = null;
+              _isEditMode = false;
+            });
+          },
+        )
+            : null,
         actions: [
-          PopupMenuButton<String>(
-            onSelected: (String result) {
-              setState(() {
-                _sortBy = result;
-                _sortRecipes();
-              });
-            },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              const PopupMenuItem<String>(
-                value: 'name',
-                child: Text('Sort by Name'),
-              ),
-              const PopupMenuItem<String>(
-                value: 'category',
-                child: Text('Sort by Category'),
-              ),
-              const PopupMenuItem<String>(
-                value: 'lastModified',
-                child: Text('Sort by Last Modified'),
-              ),
-            ],
+          if (_isEditMode)
+            TextButton(
+              child: Text('Save', style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500)),
+              onPressed: () {
+                if (_currentRecipe != null) {
+                  _saveRecipe(_currentRecipe!);
+                }
+              },
+            )
+          else
+            IconButton(
+              icon: Icon(Icons.add, color: Colors.black),
+              onPressed: _createNewRecipe,
+            ),
+        ],
+      ),
+      body: _isEditMode
+          ? RecipeBuilder(
+        recipe: _currentRecipe!,
+        onSave: _saveRecipe,
+        onUpdate: (Recipe updatedRecipe) {
+          setState(() {
+            _currentRecipe = updatedRecipe;
+          });
+        },
+      )
+          : Column(
+        children: [
+          _buildToggle(),
+          Expanded(
+            child: _showTemplates ? _buildTemplateList() : _buildRecipeList(),
           ),
         ],
       ),
-      body: _currentRecipe == null
-          ? _buildRecipeList()
-          : RecipeBuilder(
-        recipe: _currentRecipe!,
-        onSave: _saveRecipe,
-        onCancel: () => setState(() => _currentRecipe = null),
+    );
+  }
+  Widget _buildToggle() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildToggleButton('Recipes', !_showTemplates),
+          SizedBox(width: 16),
+          _buildToggleButton('Templates', _showTemplates),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _createNewRecipe,
-        child: Icon(Icons.add),
+    );
+  }
+
+  Widget _buildToggleButton(String text, bool isActive) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _showTemplates = text == 'Templates';
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+        decoration: BoxDecoration(
+          color: isActive ? Colors.black : Colors.white,
+          border: Border.all(color: Colors.black, width: 2),
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: isActive ? Colors.white : Colors.black,
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+          ),
+        ),
       ),
     );
   }
@@ -153,15 +215,30 @@ class _RecipeScreenState extends State<RecipeScreen> {
           onEdit: () => _editRecipe(recipe),
           onDelete: () => _deleteRecipe(recipe),
           onSimulate: () => _showSimulation(recipe),
+          onSaveAsTemplate: () async {
+            await StorageService.saveTemplate(recipe.copyWith(
+              id: DateTime.now().toString(),
+              name: '${recipe.name} (Template)',
+            ));
+            _loadTemplates();
+          },
         );
       },
     );
   }
 
-  void _showSimulation(Recipe recipe) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => RecipeSimulation(recipe: recipe),
+  Widget _buildTemplateList() {
+    return ListView.builder(
+      itemCount: _templates.length,
+      itemBuilder: (context, index) {
+        final template = _templates[index];
+        return ListTile(
+          title: Text(template.name, style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
+          subtitle: Text(template.category, style: TextStyle(color: Colors.grey[600])),
+          trailing: Icon(Icons.arrow_forward_ios, color: Colors.black, size: 18),
+          onTap: () => _createNewRecipe(template: template),
+        );
+      },
     );
   }
 }

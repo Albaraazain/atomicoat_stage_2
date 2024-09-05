@@ -4,6 +4,9 @@ import '../screens/system_control_screen.dart';
 import '../screens/recipe_screen.dart';
 import '../screens/monitoring_screen.dart';
 import '../screens/settings_screen.dart';
+import '../screens/plc_troubleshooter_screen.dart';
+import '../screens/plc_image_screen.dart';
+import '../screens/message_screen.dart';
 
 class AppRoutes {
   static const String home = '/';
@@ -11,14 +14,20 @@ class AppRoutes {
   static const String recipe = '/recipe';
   static const String monitoring = '/monitoring';
   static const String settings = '/settings';
+  static const String plcTroubleshooter = '/plc_troubleshooter';
+  static const String plcImage = '/plc_image';
+  static const String machineStatusChat = '/machine_status_chat';
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
-      home: (context) =>  HomeScreen(),
+      home: (context) => HomeScreen(),
       systemControl: (context) => const SystemControlScreen(),
       recipe: (context) => const RecipeScreen(),
       monitoring: (context) => const MonitoringScreen(),
-      settings: (context) =>  SettingsScreen(),
+      settings: (context) => SettingsScreen(),
+      plcTroubleshooter: (context) => PLCTroubleshooterScreen(),
+      plcImage: (context) => PLCImageScreen(),
+      machineStatusChat: (context) => MachineStatusChatScreen(),
     };
   }
 }

@@ -66,21 +66,24 @@ class RecipeStepAdapter extends TypeAdapter<RecipeStep> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return RecipeStep(
-      type: fields[0] as String,
-      parameters: (fields[1] as Map).cast<String, dynamic>(),
-      nestedSteps: (fields[2] as List?)?.cast<RecipeStep>(),
+      id: fields[0] as String?,
+      type: fields[1] as String,
+      parameters: (fields[2] as Map).cast<String, dynamic>(),
+      nestedSteps: (fields[3] as List?)?.cast<RecipeStep>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, RecipeStep obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.type)
+      ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.parameters)
+      ..write(obj.type)
       ..writeByte(2)
+      ..write(obj.parameters)
+      ..writeByte(3)
       ..write(obj.nestedSteps);
   }
 

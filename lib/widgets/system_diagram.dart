@@ -1,267 +1,132 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'dart:math' as math;
-import '../models/models.dart';
-import 'system_component.dart';
 
-class SystemDiagram extends StatefulWidget {
-  final SystemState systemState;
+class SystemDiagram extends StatelessWidget {
   final Function(String) onComponentClick;
 
-  const SystemDiagram({
-    Key? key,
-    required this.systemState,
-    required this.onComponentClick,
-  }) : super(key: key);
-
-  @override
-  _SystemDiagramState createState() => _SystemDiagramState();
-}
-
-class _SystemDiagramState extends State<SystemDiagram> with SingleTickerProviderStateMixin {
-  late TransformationController _transformationController;
-  late AnimationController _animationController;
-  Animation<Matrix4>? _animation;
-  String? hoveredComponent;
-  double _currentScale = 1.0;
-  final double _minScale = 0.5;
-  final double _maxScale = 4.0;
-
-  final List<Map<String, dynamic>> components = [
-    {'id': 'heater', 'name': 'Heater', 'position': Offset(0.2, 0.2)},
-    {'id': 'pump', 'name': 'Pump', 'position': Offset(0.4, 0.4)},
-    {'id': 'valve', 'name': 'Valve', 'position': Offset(0.6, 0.6)},
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    _transformationController = TransformationController();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 300),
-    )..addListener(() {
-      if (_animation != null) {
-        _transformationController.value = _animation!.value;
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _transformationController.dispose();
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  void _animateResetView() {
-    _animation = Matrix4Tween(
-      begin: _transformationController.value,
-      end: Matrix4.identity(),
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOutCubic,
-    ));
-    _animationController.forward(from: 0);
-    setState(() {
-      _currentScale = 1.0;
-    });
-  }
-
-  void _handleZoom(double scale) {
-    final nextScale = _currentScale * scale;
-    if (nextScale < _minScale || nextScale > _maxScale) return;
-
-    final Offset center = Offset(
-      constraints.maxWidth / 2,
-      constraints.maxHeight / 2,
-    );
-
-    final Matrix4 matrix = Matrix4.identity()
-      ..translate(center.dx, center.dy)
-      ..scale(scale)
-      ..translate(-center.dx, -center.dy);
-
-    final Matrix4 nextMatrix = matrix * _transformationController.value;
-
-    _animation = Matrix4Tween(
-      begin: _transformationController.value,
-      end: nextMatrix,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
-
-    _animationController.forward(from: 0);
-
-    setState(() {
-      _currentScale = nextScale;
-    });
-  }
-
-  late BoxConstraints constraints;
+  const SystemDiagram({Key? key, required this.onComponentClick}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        this.constraints = constraints;
-        final diagramWidth = constraints.maxWidth;
-        final diagramHeight = constraints.maxHeight;
+        return Stack(
+          children: [
+            // Main pipeline
+            Positioned(
+              left: constraints.maxWidth * 0.05,
+              top: constraints.maxHeight * 0.2,
+              right: constraints.maxWidth * 0.05,
+              child: Container(
+                height: 2,
+                color: Colors.black,
+              ),
+            ),
 
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[100],
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Stack(
-            children: [
-              GestureDetector(
-                onDoubleTap: _animateResetView,
-                child: InteractiveViewer(
-                  transformationController: _transformationController,
-                  boundaryMargin: EdgeInsets.all(double.infinity),
-                  minScale: _minScale,
-                  maxScale: _maxScale,
-                  onInteractionEnd: (details) {
-                    setState(() {
-                      _currentScale = _transformationController.value.getMaxScaleOnAxis();
-                    });
-                  },
-                  child: Container(
-                    width: diagramWidth,
-                    height: diagramHeight,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Stack(
-                      children: [
-                        _buildGrid(diagramWidth, diagramHeight),
-                        SvgPicture.asset(
-                          'assets/images/system_diagram.svg',
-                          width: diagramWidth,
-                          height: diagramHeight,
-                          fit: BoxFit.contain,
-                        ),
-                        ...components.map((component) => SystemComponent(
-                          id: component['id'],
-                          name: component['name'],
-                          position: Offset(
-                            component['position'].dx * diagramWidth,
-                            component['position'].dy * diagramHeight,
-                          ),
-                          isActive: widget.systemState.isComponentActive(component['id']),
-                          onTap: () => widget.onComponentClick(component['id']),
-                          onHover: () => setState(() => hoveredComponent = component['id']),
-                          onHoverExit: () => setState(() => hoveredComponent = null),
-                        )),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              if (hoveredComponent != null)
-                Positioned(
-                  left: 20,
-                  top: 20,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.9),
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 10,
-                          offset: Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: Text(
-                      'Component: $hoveredComponent',
-                      style: TextStyle(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
-              Positioned(
-                right: 20,
-                bottom: 20,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(30),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 10,
-                        offset: Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.remove, color: Colors.black54),
-                        onPressed: () => _handleZoom(0.8),
-                      ),
-                      Container(
-                        width: 1,
-                        height: 24,
-                        color: Colors.black12,
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.add, color: Colors.black54),
-                        onPressed: () => _handleZoom(1.2),
-                      ),
-                      Container(
-                        width: 1,
-                        height: 24,
-                        color: Colors.black12,
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.refresh, color: Colors.black54),
-                        onPressed: _animateResetView,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            // N2 GEN
+            _buildComponent(constraints, 'n2gen', 'N2\nGEN', 0.05, 0.15, Colors.blue[100]!, width: 0.1, height: 0.1),
+
+            // MFC
+            _buildComponent(constraints, 'mfc', 'MFC', 0.2, 0.15, Colors.green[100]!, width: 0.1, height: 0.1),
+
+            // Frontline Heater
+            _buildComponent(constraints, 'frontline_heater', 'Frontline\nHeater', 0.35, 0.15, Colors.orange[100]!, width: 0.25, height: 0.1),
+
+            // CHAMBER
+            _buildComponent(constraints, 'chamber', 'CHAMBER', 0.65, 0.15, Colors.purple[100]!, width: 0.15, height: 0.1),
+
+            // PC
+            _buildComponent(constraints, 'pc', 'PC', 0.85, 0.15, Colors.cyan[100]!, width: 0.05, height: 0.1),
+
+            // PU (Pump)
+            _buildComponent(constraints, 'pump', 'PU', 0.95, 0.15, Colors.indigo[100]!, width: 0.05, height: 0.1),
+
+            // Connections from Frontline Heater to valves
+            _buildConnection(constraints, 0.425, 0.25, 0.425, 0.35),
+            _buildConnection(constraints, 0.575, 0.25, 0.575, 0.35),
+
+            // Valves
+            _buildValve(constraints, 'v1', 'V1', 0.4, 0.35),
+            _buildValve(constraints, 'v2', 'V2', 0.55, 0.35),
+
+            // Connections from valves to heaters
+            _buildConnection(constraints, 0.425, 0.4, 0.425, 0.5),
+            _buildConnection(constraints, 0.575, 0.4, 0.575, 0.5),
+
+            // Heaters
+            _buildComponent(constraints, 'h1', 'H1', 0.375, 0.5, Colors.red[100]!, width: 0.1, height: 0.08),
+            _buildComponent(constraints, 'h2', 'H2', 0.525, 0.5, Colors.red[100]!, width: 0.1, height: 0.08),
+
+            // Connection to Back heater
+            _buildConnection(constraints, 0.8, 0.25, 0.8, 0.35),
+
+            // Back (Backline Heater)
+            _buildComponent(constraints, 'backline_heater', 'Back', 0.75, 0.35, Colors.orange[100]!, width: 0.1, height: 0.08),
+          ],
         );
       },
     );
   }
 
-  Widget _buildGrid(double width, double height) {
-    return CustomPaint(
-      size: Size(width, height),
-      painter: GridPainter(),
+  Widget _buildComponent(BoxConstraints constraints, String id, String label, double x, double y, Color color, {required double width, required double height}) {
+    return Positioned(
+      left: constraints.maxWidth * x,
+      top: constraints.maxHeight * y,
+      child: GestureDetector(
+        onTap: () => onComponentClick(id),
+        child: Container(
+          width: constraints.maxWidth * width,
+          height: constraints.maxHeight * height,
+          decoration: BoxDecoration(
+            color: color,
+            border: Border.all(color: Colors.black),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Center(
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+      ),
     );
   }
-}
 
-class GridPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.grey[300]!
-      ..strokeWidth = 0.5;
-
-    for (double i = 0; i <= size.width; i += 40) {
-      canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
-    }
-
-    for (double i = 0; i <= size.height; i += 40) {
-      canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
-    }
+  Widget _buildValve(BoxConstraints constraints, String id, String label, double x, double y) {
+    return Positioned(
+      left: constraints.maxWidth * x,
+      top: constraints.maxHeight * y,
+      child: GestureDetector(
+        onTap: () => onComponentClick(id),
+        child: Container(
+          width: constraints.maxWidth * 0.05,
+          height: constraints.maxWidth * 0.05,
+          decoration: BoxDecoration(
+            color: Colors.green[100],
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.black),
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
+  Widget _buildConnection(BoxConstraints constraints, double startX, double startY, double endX, double endY) {
+    return Positioned(
+      left: constraints.maxWidth * startX,
+      top: constraints.maxHeight * startY,
+      child: Container(
+        width: 2,
+        height: constraints.maxHeight * (endY - startY),
+        color: Colors.black,
+      ),
+    );
+  }
 }

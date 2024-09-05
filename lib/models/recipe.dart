@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:uuid/uuid.dart';
 
 part 'recipe.g.dart';
 
@@ -51,7 +52,7 @@ class Recipe extends HiveObject {
 
   factory Recipe.fromMap(Map<String, dynamic> map) {
     return Recipe(
-      id: map['id'] ?? DateTime.now().toString(),
+      id: map['id'] ?? const Uuid().v4(),
       name: map['name'] ?? '',
       category: map['category'] ?? 'Default',
       steps: (map['steps'] as List<dynamic>?)?.map((step) => RecipeStep.fromMap(step)).toList() ?? [],
@@ -75,22 +76,41 @@ class Recipe extends HiveObject {
 @HiveType(typeId: 1)
 class RecipeStep {
   @HiveField(0)
-  String type;
+  String id;
 
   @HiveField(1)
-  Map<String, dynamic> parameters;
+  String type;
 
   @HiveField(2)
+  Map<String, dynamic> parameters;
+
+  @HiveField(3)
   List<RecipeStep>? nestedSteps;
 
   RecipeStep({
+    String? id,
     required this.type,
     required this.parameters,
     this.nestedSteps,
-  });
+  }) : id = id ?? const Uuid().v4();
+
+  RecipeStep copyWith({
+    String? id,
+    String? type,
+    Map<String, dynamic>? parameters,
+    List<RecipeStep>? nestedSteps,
+  }) {
+    return RecipeStep(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      parameters: parameters ?? Map.from(this.parameters),
+      nestedSteps: nestedSteps ?? (this.nestedSteps != null ? List.from(this.nestedSteps!) : null),
+    );
+  }
 
   factory RecipeStep.fromMap(Map<String, dynamic> map) {
     return RecipeStep(
+      id: map['id'] ?? const Uuid().v4(),
       type: map['type'],
       parameters: Map<String, dynamic>.from(map['parameters']),
       nestedSteps: (map['nestedSteps'] as List<dynamic>?)?.map((step) => RecipeStep.fromMap(step)).toList(),
@@ -99,6 +119,7 @@ class RecipeStep {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'type': type,
       'parameters': parameters,
       'nestedSteps': nestedSteps?.map((step) => step.toMap()).toList(),

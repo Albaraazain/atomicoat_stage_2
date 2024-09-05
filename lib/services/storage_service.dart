@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/models.dart';
@@ -8,27 +7,40 @@ import '../models/recipe_adapter.dart';
 
 class StorageService {
   static late SharedPreferences _prefs;
-  static Box<Recipe>? _recipeBox;
+  static late Box<Recipe> _recipeBox;
+  static late Box<Recipe> _templateBox;
   static const String _systemStateKey = 'system_state';
   static const String _currentUserKey = 'current_user';
   static const String _appSettingsKey = 'app_settings';
 
   static Future<void> initialize() async {
-    try {
-      _prefs = await SharedPreferences.getInstance();
-      await Hive.initFlutter();
-      Hive.registerAdapter(RecipeTypeAdapterCustom());
-      Hive.registerAdapter(RecipeStepAdapterCustom());
-      _recipeBox = await Hive.openBox<Recipe>('recipes');
-    } catch (e) {
-      debugPrint('Error initializing StorageService: $e');
-      await clearHiveData();
-      _recipeBox = await Hive.openBox<Recipe>('recipes');
-    }
+    _prefs = await SharedPreferences.getInstance();
+    await Hive.initFlutter();
+    Hive.registerAdapter(RecipeTypeAdapterCustom());
+    Hive.registerAdapter(RecipeStepAdapterCustom());
+    _recipeBox = await Hive.openBox<Recipe>('recipes');
+    _templateBox = await Hive.openBox<Recipe>('recipe_templates');
   }
 
   static Future<void> clearHiveData() async {
     await Hive.deleteBoxFromDisk('recipes');
+  }
+
+  // Template methods
+  static Future<List<Recipe>> getAllTemplates() async {
+    return _templateBox.values.toList();
+  }
+
+  static Future<void> saveTemplate(Recipe template) async {
+    await _templateBox.put(template.id, template);
+  }
+
+  static Future<void> deleteTemplate(String id) async {
+    await _templateBox.delete(id);
+  }
+
+  static Future<Recipe?> getTemplate(String id) async {
+    return _templateBox.get(id);
   }
 
   // SystemState methods

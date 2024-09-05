@@ -6,6 +6,7 @@ class RecipeListItem extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onDelete;
   final VoidCallback onSimulate;
+  final VoidCallback onSaveAsTemplate;
 
   const RecipeListItem({
     Key? key,
@@ -13,59 +14,97 @@ class RecipeListItem extends StatelessWidget {
     required this.onEdit,
     required this.onDelete,
     required this.onSimulate,
+    required this.onSaveAsTemplate,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: ListTile(
-        title: Text(recipe.name),
-        subtitle: Text('${recipe.category} - Last modified: ${recipe.lastModified.toLocal()}'),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: onEdit,
-            ),
-            IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: onDelete,
-            ),
-            IconButton(
-              icon: Icon(Icons.play_arrow),
-              onPressed: onSimulate,
-            ),
-          ],
-        ),
-        onTap: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(recipe.name),
-                content: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text('Category: ${recipe.category}'),
-                    Text('Version: ${recipe.version}'),
-                    Text('Last Modified: ${recipe.lastModified.toLocal()}'),
-                    Text('Steps: ${recipe.steps.length}'),
-                  ],
-                ),
-                actions: [
-                  TextButton(
-                    child: Text('Close'),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ],
-              );
-            },
-          );
-        },
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
       ),
+      child: ListTile(
+        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        title: Text(
+          recipe.name,
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w500,
+            fontSize: 18,
+          ),
+        ),
+        subtitle: Text(
+          recipe.category,
+          style: TextStyle(
+            color: Colors.grey[600],
+            fontSize: 14,
+          ),
+        ),
+        trailing: IconButton(
+          icon: Icon(Icons.more_horiz, color: Colors.black),
+          onPressed: () => _showOptions(context),
+        ),
+      ),
+    );
+  }
+
+  void _showOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.edit, color: Colors.black),
+                title: Text('Edit', style: TextStyle(color: Colors.black)),
+                onTap: () {
+                  Navigator.pop(context);
+                  onEdit();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.play_arrow, color: Colors.black),
+                title: Text('Simulate', style: TextStyle(color: Colors.black)),
+                onTap: () {
+                  Navigator.pop(context);
+                  onSimulate();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.content_copy, color: Colors.black),
+                title: Text('Save as Template', style: TextStyle(color: Colors.black)),
+                onTap: () {
+                  Navigator.pop(context);
+                  onSaveAsTemplate();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.delete, color: Colors.red),
+                title: Text('Delete', style: TextStyle(color: Colors.red)),
+                onTap: () {
+                  Navigator.pop(context);
+                  onDelete();
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
